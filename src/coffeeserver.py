@@ -288,6 +288,17 @@ if __name__ == '__main__':
           'geofence': (GEOFENCE_DB, GEOFENCE_IPS, EDITOR_IPS),
           'countries':GEOFENCE_COUNTRIES,
           'regions':GEOFENCE_REGIONS}),
+ 	(r'/astroph-coffee/calendar',coffeehandlers.CalendarHandler,
+          {'database':DATABASE,
+          'voting_start':VOTING_START,
+          'voting_end':VOTING_END,
+          'coffee_time':COFFEE_TIME,
+          'server_tz':SERVER_TZ,
+          'signer':FLASHSIGNER,
+          'room':COFFEE_ROOM,
+          'building':COFFEE_BUILDING,
+          'department':COFFEE_DEPARTMENT,
+          'institution':COFFEE_INSTITUTION}), 
         (r'/astroph-coffee/about',coffeehandlers.AboutHandler,
          {'database':DATABASE}),
         (r'/astroph-coffee/about/',coffeehandlers.AboutHandler,
@@ -330,4 +341,4 @@ if __name__ == '__main__':
 
         DATABASE.close()
         if GEOFENCE_DB:
-            GEOFENCE_DB.close()
+           GEOFENCE_DB.close()
