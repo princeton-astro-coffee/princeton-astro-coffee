@@ -221,23 +221,14 @@ Python 2.7.3 (default, Feb 27 2014, 19:58:35)
 
 ## Running the server
 
-Use the coffeeserver.sh shell script in the `astroph-coffee/shell` directory to
-run the actual server:
+Use the `systemctl` to run on princeton's dedicated server. It can be used to start, stop and restart 
+the variious daemons that allow the website to run. The main daemon for the website is `astroph-coffee`.
+Using the command requires having the rights to `sudo` on the machine:
 
 ```
-Usage: coffeeserver.sh start </path/to/astroph-coffee/directory> [debugflag] [server port]
-       coffeeserver.sh stop
-       coffeeserver.sh status
-```
-
-where:
-
-```
-[debugflag] = 0 -> deployment mode, templates cached, no backtraces
-[debugflag] = 1 -> development mode, backtraces on errors,
-                   live-reload on source change
-
-[server port] -> set server port to use, default is 5005
+Usage: sudo systemctl start astroph-coffee
+       sudo systemctl stop astroph-coffee
+       sudo systemctl restart astroph-coffee
 ```
 
 Then navigate to: `http://localhost:[server port]/astroph-coffee`. For external
