@@ -1,6 +1,8 @@
-## astroph-coffee - A simple platform for astro-ph arXiv discussion
+This repository is based on a template by Waqas Bhatti that can be found at [https://github.com/waqasbhatti/astroph-coffee]()
 
-This server helps organize astro-ph discussion by providing a way for people to
+## princeton-astroph-coffee - A simple platform for astro-ph arXiv discussion
+
+This server helps organize the Princeton astro-ph coffee discussion by providing a way for people to
 see local papers and vote on papers they want to talk about. It has the
 following components:
 
