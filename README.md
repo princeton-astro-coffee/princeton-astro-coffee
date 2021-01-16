@@ -1,4 +1,6 @@
-This repository is based on a template by Waqas Bhatti that can be found at [https://github.com/waqasbhatti/astroph-coffee]()
+This repository is based on a template by Waqas Bhatti that can be found at [https://github.com/waqasbhatti/astroph-coffee](). 
+This repository is not to be used as a template and is customized to be used to run the Princeton astroph coffee sessions. 
+If you would like to host a similar website for your institute, please use the repository mentioned [above](https://github.com/waqasbhatti/astroph-coffee).
 
 ## princeton-astroph-coffee - A simple platform for astro-ph arXiv discussion
 
