@@ -229,9 +229,6 @@ Using the command requires having the rights to `sudo` on the machine:
 Usage: sudo systemctl start astroph-coffee
        sudo systemctl stop astroph-coffee
        sudo systemctl restart astroph-coffee
-
-```
-
 ```
 
 Then navigate to: `http://localhost:[server port]/astroph-coffee`. For external
