@@ -352,7 +352,7 @@ class LocalArchiveHandler(tornado.web.RequestHandler):
     '''
         This handles the local author archives.
 
-        url: /astroph-coffee/archive/YYYYMMDD
+        url: /astroph-coffee/archive/local-papers
 
         '''
     def initialize(self,
@@ -503,7 +503,7 @@ class LocalArchiveHandler(tornado.web.RequestHandler):
                 arxivdb.get_articles_for_listing(utcdate=todays_utcdate,
                                                  database=self.database))
                 local_ahistory.append(local_articles)
-            self.render("local_papers.html",
+            self.render("local-papers.html",
                         local_today=local_today,
                         dates=date_history,
                         local_articles=local_ahistory,
