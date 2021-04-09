@@ -348,6 +348,168 @@ class CoffeeHandler(tornado.web.RequestHandler):
                     coffee_institution=self.institution)
 
 
+class LocalArchiveHandler(tornado.web.RequestHandler):
+    '''
+        This handles the local author archives.
+
+        url: /astroph-coffee/archive/YYYYMMDD
+
+        '''
+    def initialize(self,
+                   database,
+                   reserve_interval,
+                   signer):
+        '''
+                Sets up the database.
+
+                '''
+
+        self.database = database
+        self.reserve_interval = reserve_interval
+        self.signer = signer
+
+    def get(self, archivedate):
+        '''
+        This handles GET requests.
+
+        '''
+
+        # handle a redirect with an attached flash message
+        flash_message = self.get_argument('f', None)
+        if flash_message:
+            flashtext = msgdecode(flash_message, self.signer)
+            LOGGER.warning('flash message: %s' % flashtext)
+            flashbox = (
+                    '<div data-alert class="alert-box radius">%s'
+                    '<a href="#" class="close">&times;</a></div>' %
+                    flashtext
+            )
+            flash_message = flashbox
+        else:
+            flash_message = ''
+
+        local_today = datetime.now(tz=utc).strftime('%Y-%m-%d %H:%M %Z')
+
+        # first, get the session token
+        session_token = self.get_secure_cookie('coffee_session',
+                                               max_age_days=30)
+        ip_address = self.request.remote_ip
+
+        if 'User-Agent' in self.request.headers:
+            client_header = self.request.headers['User-Agent'] or 'none'
+        else:
+            client_header = 'none'
+
+        user_name = 'anonuser@%s' % ip_address
+        new_user = True
+
+        # check if this session_token corresponds to an existing user
+        if session_token:
+
+            sessioninfo = webdb.session_check(session_token,
+                                              database=self.database)
+
+            if sessioninfo[0]:
+
+                user_name = sessioninfo[2]
+                LOGGER.info('found session for %s, continuing with it' %
+                            user_name)
+                new_user = False
+
+            elif sessioninfo[-1] != 'database_error':
+
+                LOGGER.warning('unknown user, starting a new session for '
+                               '%s, %s' % (ip_address, client_header))
+
+                sessionok, token = webdb.anon_session_initiate(
+                    ip_address,
+                    client_header,
+                    database=self.database
+                )
+
+                if sessionok and token:
+                    self.set_secure_cookie('coffee_session',
+                                           token,
+                                           httponly=True)
+                else:
+                    LOGGER.error('could not set session cookie for %s, %s' %
+                                 (ip_address, client_header))
+                    self.set_status(500)
+                    message = ("There was a database error "
+                               "trying to look up user credentials.")
+
+                    LOGGER.error('database error while looking up session for '
+                                 '%s, %s' % (ip_address, client_header))
+
+                    self.render("errorpage.html",
+                                user_name=user_name,
+                                local_today=local_today,
+                                error_message=message,
+                                flash_message=flash_message,
+                                new_user=new_user)
+
+
+            else:
+
+                if ('crawler' not in client_header.lower() and
+                        'bot' not in client_header.lower()):
+
+                    LOGGER.warning('unknown user, starting a new session for '
+                                   '%s, %s' % (ip_address, client_header))
+
+                    sessionok, token = webdb.anon_session_initiate(
+                        ip_address,
+                        client_header,
+                        database=self.database
+                    )
+
+                    if sessionok and token:
+                        self.set_secure_cookie('coffee_session',
+                                               token,
+                                               httponly=True)
+                    else:
+                        LOGGER.error('could not set session cookie for %s, %s' %
+                                     (ip_address, client_header))
+                        self.set_status(500)
+                        message = ("There was a database error "
+                                   "trying to look up user credentials.")
+
+                        LOGGER.error('database error while looking up session for '
+                                     '%s, %s' % (ip_address, client_header))
+
+                        self.render("errorpage.html",
+                                    user_name=user_name,
+                                    local_today=local_today,
+                                    error_message=message,
+                                    flash_message=flash_message,
+                                    new_user=new_user)
+
+        if archivedate is None:
+            count = 0
+            local_ahistory = []
+            date_history = []
+            while count < 5:
+                archive_datestr = datetime(hour=0,
+                                           minute=15,
+                                           second=0,
+                                           day=int(day),
+                                           month=int(month),
+                                           year=int(year),
+                                           tzinfo=utc).strftime('%A, %b %d %Y')
+                date_history.append(archive_datestr)
+
+                (latestdate, local_articles,
+                voted_articles, other_articles, reserved_articles) = (
+                arxivdb.get_articles_for_listing(utcdate=todays_utcdate,
+                                                 database=self.database))
+                local_ahistory.append(local_articles)
+            self.render("local_papers.html",
+                        local_today=local_today,
+                        dates=date_history,
+                        local_articles=local_ahistory,
+                        flash_message=flash_message,
+                        reserve_interval_days=self.reserve_interval)
+
 
 
 class ArticleListHandler(tornado.web.RequestHandler):

@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block pagetitle %}Astro-Coffee@Princeton{% end %}
+
+{% block pageheader %}
+
+{% include "topbar.html" %}
+
+<div class="row">
+  <div class="small-12 columns">
+    <h1>Locally-authored papres</h1>
+  </div>
+</div>
+
+{% end %}
+
+
+{% block pagecontent %}
+
+<div class="row no-mathjax">
+  <div class="small-12 columns">
+	<p>This is the list of the papers for the past 5 days that include local authors affiliated with Princeton University.
+  This list is based on a string-matching algorithm that compares arxiv's author lists to the list of the members of the Princeton astro department. If one of your papers is not listed here, there are two possible reasons:
+  <p> 1. The string matching algorithm failed at recognizing your name which happens too often for our liking. At the moment we use a simple algorithm that requires threshold values that are poorly optimized. Contributions are welcome!</p>
+  <p> 2. Your name is not in the list, either because you are new or because the admin did not pull the list that contains your name yet. In this case, please let <a href="remyj@astro.princeton.edu"> Remy Joseph </a> or <a href="remyj@astro.princeton.edu"> Bruce Draine </a> know about the issue. </p>
+  </div>
+</div>
+
+
+{% for days in date_history %}
+  {% set count=0 %}
+  <div class="row no-mathjax">
+    <div class="small-12 columns">
+      <h2>Papers for {{ todays_date }}</h2>
+    </div>
+  </div>
+
+  {% set local_articles = local_ahistory[count]%}
+
+  <div class="row no-mathjax">
+    <div class="small-12 columns">
+
+      <ul class="inline-list">
+
+        {% if local_articles and len(local_articles) > 1 %}
+        <li><a href="#local-papers" class="button small secondary radius"><strong>{{ len(local_articles) }}</strong> papers with local authors</a></li>
+        {% elif local_articles and len(local_articles) == 1 %}
+        <li><a href="#local-papers" class="button small secondary radius"><strong>1</strong> paper with local authors</a></li>
+        {% end %}
+
+        <li><a href="#other-papers" class="button small secondary radius"><strong>{{ len(other_articles) }}</strong> other papers</a></li>
+
+      </ul>
+
+    </div>
+  </div>
+
+  {% set count=count+1%}
+
+{% for %}
+
+{% end %}
+
+{% block pagejs %}
+
+<script src="{{ static_url("js/coffee.js") }}"></script>
+
+<script>
+$(document).ready(function () {
+  coffee.action_setup();
+});
+</script>
+
+{% end %}
+
