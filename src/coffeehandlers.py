@@ -368,7 +368,7 @@ class LocalArchiveHandler(tornado.web.RequestHandler):
         self.reserve_interval = reserve_interval
         self.signer = signer
 
-    def get(self, archivedate):
+    def get(self):
         '''
         This handles GET requests.
 
