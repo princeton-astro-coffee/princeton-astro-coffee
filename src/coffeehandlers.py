@@ -489,14 +489,8 @@ class LocalArchiveHandler(tornado.web.RequestHandler):
         local_ahistory = []
         date_history = []
         while count < 5:
-            archive_datestr = datetime(hour=0,
-                                       minute=15,
-                                       second=0,
-                                       day=int(day),
-                                       month=int(month),
-                                       year=int(year),
-                                       tzinfo=utc).strftime('%A, %b %d %Y')
-            date_history.append(archive_datestr)
+
+            date_history.append(local_today)
             (latestdate, local_articles,
             voted_articles, other_articles, reserved_articles) = (
             arxivdb.get_articles_for_listing(utcdate=todays_utcdate,
