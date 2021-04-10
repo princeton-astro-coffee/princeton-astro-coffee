@@ -484,31 +484,30 @@ class LocalArchiveHandler(tornado.web.RequestHandler):
                                     flash_message=flash_message,
                                     new_user=new_user)
 
-        if archivedate is None:
-            count = 0
-            local_ahistory = []
-            date_history = []
-            while count < 5:
-                archive_datestr = datetime(hour=0,
-                                           minute=15,
-                                           second=0,
-                                           day=int(day),
-                                           month=int(month),
-                                           year=int(year),
-                                           tzinfo=utc).strftime('%A, %b %d %Y')
-                date_history.append(archive_datestr)
 
-                (latestdate, local_articles,
-                voted_articles, other_articles, reserved_articles) = (
-                arxivdb.get_articles_for_listing(utcdate=todays_utcdate,
-                                                 database=self.database))
-                local_ahistory.append(local_articles)
-            self.render("local-papers.html",
-                        local_today=local_today,
-                        dates=date_history,
-                        local_articles=local_ahistory,
-                        flash_message=flash_message,
-                        reserve_interval_days=self.reserve_interval)
+        count = 0
+        local_ahistory = []
+        date_history = []
+        while count < 5:
+            archive_datestr = datetime(hour=0,
+                                       minute=15,
+                                       second=0,
+                                       day=int(day),
+                                       month=int(month),
+                                       year=int(year),
+                                       tzinfo=utc).strftime('%A, %b %d %Y')
+            date_history.append(archive_datestr)
+            (latestdate, local_articles,
+            voted_articles, other_articles, reserved_articles) = (
+            arxivdb.get_articles_for_listing(utcdate=todays_utcdate,
+                                             database=self.database))
+            local_ahistory.append(local_articles)
+        self.render("local-papers.html",
+                    local_today=local_today,
+                    dates=date_history,
+                    local_articles=local_ahistory,
+                    flash_message=flash_message,
+                    reserve_interval_days=self.reserve_interval)
 
 
 
