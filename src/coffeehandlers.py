@@ -493,7 +493,7 @@ class LocalArchiveHandler(tornado.web.RequestHandler):
             date_history.append(local_today)
             (latestdate, local_articles,
             voted_articles, other_articles, reserved_articles) = (
-            arxivdb.get_articles_for_listing(utcdate=todays_utcdate,
+            arxivdb.get_articles_for_listing(utcdate=datetime.now(tz=utc).strftime('%Y-%m-%d'),
                                              database=self.database))
             local_ahistory.append(local_articles)
         self.render("local-papers.html",
