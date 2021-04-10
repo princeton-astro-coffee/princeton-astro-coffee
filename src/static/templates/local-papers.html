@@ -19,7 +19,7 @@
 
   <div class="row no-mathjax">
     <div class="small-12 columns">
-      <p>This is the list of the papers for the past 5 days that include local authors affiliated with Princeton University.  This list is based on a string-matching algorithm that compares arxiv's author lists to the list of the members of the Princeton astro department. If one of your papers is not listed here, there are two possible reasons:
+      <p>This is the list of the papers for the past 5 days that include local authors affiliated with Princeton University.  This list is based on a string-matching algorithm that compares arxiv's author lists to the list of the members of the Princeton astro department. If one of your papers is not listed here, there are two possible reasons:</p>
       <p> 1. The string matching algorithm failed at recognizing your name which happens too often for our liking. At the moment we use a simple algorithm that requires threshold values that are poorly optimized. Contributions are welcome!</p>
       <p> 2. Your name is not in the list, either because you are new or because the admin did not pull the list that contains your name yet. In this case, please let <a href="remyj@astro.princeton.edu"> Remy Joseph </a> or <a href="remyj@astro.princeton.edu"> Bruce Draine </a> know about the issue. </p>
     </div>
@@ -42,6 +42,9 @@
     {% if local_articles %}
 
     <h2 id="local-papers">Papers with local authors</h2>
+
+      </div>
+    </div>
 
     {% for article in local_articles %}
 
@@ -172,7 +175,8 @@
     {% set count=count+1%}
 
   {% end %}
-
+{% end %}
+{% end %}
 {% end %}
 
 {% block pagejs %}
