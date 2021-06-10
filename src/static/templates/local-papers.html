@@ -6,27 +6,182 @@
 
 {% include "topbar.html" %}
 
-<div class="row">
+<div class="row no-mathjax">
   <div class="small-12 columns">
-    <h1>Locally-authored papers</h1>
+    <h1>Locally authored papers of the past 5 days</h1>
   </div>
 </div>
 
 {% end %}
 
-
 {% block pagecontent %}
 
-  <div class="row no-mathjax">
-    <div class="small-12 columns">
-      <p>This is the list of the papers for the past 5 days that include local authors affiliated with Princeton University.  This list is based on a string-matching algorithm that compares arxiv's author lists to the list of the members of the Princeton astro department. If one of your papers is not listed here, there are two possible reasons:</p>
-      <p> 1. The string matching algorithm failed at recognizing your name which happens too often for our liking. At the moment we use a simple algorithm that requires threshold values that are poorly optimized. Contributions are welcome!</p>
-      <p> 2. Your name is not in the list, either because you are new or because the admin did not pull the list that contains your name yet. In this case, please let <a href="remyj@astro.princeton.edu"> Remy Joseph </a> or <a href="remyj@astro.princeton.edu"> Bruce Draine </a> know about the issue. </p>
-    </div>
+<div class="row no-mathjax">
+  <div class="small-12 columns">
+  <p>This is the list of the papers for the past 5 days that include local authors affiliated with Princeton University.
+  This list is based on a string-matching algorithm that compares arxiv's author lists to the list of the members of the Princeton astro department. If one of your papers is not listed here, there are two possible reasons:
+  <p> 1. The string matching algorithm failed at recognizing your name which happens too often for our liking. At the moment we use a simple algorithm that requires threshold values that are poorly optimized. Contributions are welcome!</p>
+  <p> 2. Your name is not in the list, either because you are new or because the admin did not pull the list that contains your name yet. In this case, please let <a href="remyj@astro.princeton.edu"> Remy Joseph </a> or <a href="remyj@astro.princeton.edu"> Bruce Draine </a> know about the issue. </p>
   </div>
+</div>
 
 
-{% end %}
+<div class="row no-mathjax">
+  <div class="small-12 columns">
+
+    {% if local_list %}
+
+    {% set count = 0 %}
+
+    {% for local_articles in local_list %}
+
+    {% if len(local_articles)<1%}
+
+    <h2 id="local-papers"> No papers found with local authors on {{ days[count] }}</h2>
+
+    {% else %}
+
+    <h2 id="local-papers">Papers with local authors from {{ days[count] }}</h2>
+
+    {% for article in local_articles %}
+
+    <div class="row small-listing-row local-paper-listing">
+      <div class="small-12 columns">
+
+        <div class="row">
+
+          <div class="small-12 medium-9 columns">
+
+            <div class="row">
+              <div class="small-12 columns">
+                {% set local_specaffil = article[-1] %}
+                {% if local_specaffil and len(local_specaffil) > 0 %}
+                <h4 class="paper-title mathjax" data-arxivid="{{ article[0] }}"><a href="#" title="click to see/hide abstract">[{{ local_specaffil }}] {{ article[2] }}</a></h4>
+                {% else %}
+                <h4 class="paper-title mathjax" data-arxivid="{{ article[0] }}"><a href="#" title="click to see/hide abstract">{{ article[2] }}</a></h4>
+                {% end %}
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="small-12 columns">
+                <h6 class="subheader">
+                  {% raw article[4] %}
+                </h6>
+                {% if len(article[5]) > 0 %}
+                <p class="comments-para">{% raw article[5] %}</p>
+                {% end %}
+              </div>
+            </div>
+
+          </div>
+
+          <div class="small-12 medium-3 columns text-right show-for-medium-up">
+
+            {% if article[9] > 1 %}
+              <h5>
+                <strong>{{ article[9] }}</strong> votes
+              </h5>
+            {% elif article[9] == 1 %}
+              <h5>
+                <strong>{{ article[9] }}</strong> vote
+              </h5>
+            {% elif article[9] == 0 %}
+              <h5>
+                <strong>{{ article[9] }}</strong> votes
+              </h5>
+            {% end %}
+
+            <div class="row small-listing-row">
+              <div class="small-12 columns">
+                Paper {{ article[1] }} &mdash; <a href="{{ article[7] }}">{{ article[0] }}</a>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="small-12 columns">
+                <a href="{{ article[8] }}"
+                   class="button success radius ">
+                  Get PDF
+                </a>
+              </div>
+            </div>
+
+            {% if len(article[11]) > 0 %}
+            <div class="row small-listing-row">
+              <div class="small-12 columns">
+                Presenters: <strong>{{ article[11] }}</strong>
+              </div>
+            </div>
+            {% end %}
+
+          </div>
+
+          <div class="small-12 medium-3 columns text-center show-for-small-only">
+
+            {% if article[9] > 1 %}
+              <h5>
+                <strong>{{ article[9] }}</strong> votes
+              </h5>
+            {% elif article[9] == 1 %}
+              <h5>
+                <strong>{{ article[9] }}</strong> vote
+              </h5>
+            {% elif article[9] == 0 %}
+              <h5>
+                <strong>{{ article[9] }}</strong> votes
+              </h5>
+            {% end %}
+
+            <div class="row small-listing-row">
+              <div class="small-12 columns">
+                Paper {{ article[1] }} &mdash; <a href="{{ article[7] }}">{{ article[0] }}</a>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="small-12 columns">
+                <a href="{{ article[8] }}"
+                   class="button success radius ">
+                  Get PDF
+                </a>
+              </div>
+            </div>
+
+            {% if len(article[11]) > 0 %}
+            <div class="row small-listing-row">
+              <div class="small-12 columns">
+                Presenters: <strong>{{ article[11] }}</strong>
+              </div>
+            </div>
+            {% end %}
+
+          </div>
+
+        </div>
+
+        <div class="row paper-abstract" data-arxivid="{{ article[0] }}">
+          <div class="small-12 columns">
+            <p class="abstract-para-medium mathjax">{{ article[6] }}</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    {% end %}
+
+    {% end %}
+
+    {% set count = count + 1%}
+
+    {% end %}
+
+    {% end %}
+
+  </div>
+</div>
+
 {% end %}
 
 {% block pagejs %}
@@ -40,4 +195,3 @@ $(document).ready(function () {
 </script>
 
 {% end %}
-
