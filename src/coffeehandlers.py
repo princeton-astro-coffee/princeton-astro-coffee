@@ -477,6 +477,12 @@ class LocalArchiveHandler(tornado.web.RequestHandler):
         timenow = datetime.now(tz=utc).timetz()
 >>>>>>> f825757 (input fix3)
 
+        (latestdate, local_articles,
+                 voted_articles, other_articles, reserved_articles) = (
+                     arxivdb.get_articles_for_listing(
+                         database=self.database
+                     )
+
         # check if this session_token corresponds to an existing user
         if session_token:
 
@@ -647,6 +653,7 @@ class LocalArchiveHandler(tornado.web.RequestHandler):
                     voting_localend=local_end,
                     voting_start=utc_start,
                     voting_end=utc_end,
+                    local_articles=local_articles,
                     coffeetime_local=local_coffee,
                     coffeetime_utc=utc_coffee,
                     flash_message=flash_message,
