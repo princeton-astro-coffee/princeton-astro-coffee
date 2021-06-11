@@ -3126,10 +3126,11 @@ class UpdateHandler(tornado.web.RequestHandler):
         query = 'delete from arxiv where utcdate = '+dtnow.strftime('%Y-%m-%d')
         cursor.execute(query)
 
-        
+        if closedb:
+            cursor.close()
+            self.database.close()
 
         import arxivutils
-        os.system('cd /home/coffee/astroph-coffee/run/')
 
         # download the HTML of tonight's astro-ph listing
         listing = arxivutils.arxiv_update()
@@ -3138,11 +3139,9 @@ class UpdateHandler(tornado.web.RequestHandler):
         # the match_threshold is used to set the strictness of local author matching
         # smaller values are more relaxed, match_threshold ranges from 0.0 to 1.0.
         # the default value is 0.93
-        arxivdb.insert_articles(listing)
+        arxivdb.insert_articles(listing, tag_locals=False)
 
-        if closedb:
-            cursor.close()
-            self.database.close()
+        
         self.render("update.html")
 
 
