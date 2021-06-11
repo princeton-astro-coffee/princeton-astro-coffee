@@ -427,6 +427,7 @@ class LocalArchiveHandler(tornado.web.RequestHandler):
         new_user = True
 
         # check if we're in voting time-limits
+<<<<<<< HEAD
         timenow = datetime.today()
 
         local_list = []
@@ -472,6 +473,9 @@ class LocalArchiveHandler(tornado.web.RequestHandler):
             local_list.append(local_articles)
             days.append(day)
 
+=======
+        timenow = datetime.now(tz=utc).timetz()
+>>>>>>> f825757 (input fix3)
 
         # check if this session_token corresponds to an existing user
         if session_token:
@@ -579,6 +583,7 @@ class LocalArchiveHandler(tornado.web.RequestHandler):
         # construct the current dt and use it to figure out the local-to-server
         # voting times
         dtnow = datetime.now(tz=utc)
+<<<<<<< HEAD
 
         dtstart = dtnow.replace(hour=self.voting_start.hour,
                                 minute=self.voting_start.minute,
@@ -610,6 +615,48 @@ class LocalArchiveHandler(tornado.web.RequestHandler):
                     days=days,
                     flash_message=flash_message,
                     new_user=new_user)
+=======
+
+        dtstart = dtnow.replace(hour=self.voting_start.hour,
+                                minute=self.voting_start.minute,
+                                second=0)
+        local_start = dtstart.astimezone(self.local_tz)
+        local_start = local_start.strftime('%H:%M %Z')
+
+        dtend = dtnow.replace(hour=self.voting_end.hour,
+                              minute=self.voting_end.minute,
+                              second=0)
+        local_end = dtend.astimezone(self.local_tz)
+        local_end = local_end.strftime('%H:%M %Z')
+
+        dtcoffee = dtnow.replace(hour=self.coffee_time.hour,
+                                 minute=self.coffee_time.minute,
+                                 second=0)
+        local_coffee = dtcoffee.astimezone(self.local_tz)
+        local_coffee = local_coffee.strftime('%H:%M %Z')
+
+
+        utc_start = self.voting_start.strftime('%H:%M %Z')
+        utc_end = self.voting_end.strftime('%H:%M %Z')
+        utc_coffee = self.coffee_time.strftime('%H:%M %Z')
+
+        self.render("local-papers.html",
+                    user_name=user_name,
+                    local_today=local_today,
+                    voting_localstart=local_start,
+                    voting_localend=local_end,
+                    voting_start=utc_start,
+                    voting_end=utc_end,
+                    coffeetime_local=local_coffee,
+                    coffeetime_utc=utc_coffee,
+                    flash_message=flash_message,
+                    new_user=new_user,
+                    coffee_room=self.room,
+                    coffee_building=self.building,
+                    coffee_department=self.department,
+                    coffee_institution=self.institution)
+
+>>>>>>> f825757 (input fix3)
 
 
 
