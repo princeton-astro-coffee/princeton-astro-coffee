@@ -424,6 +424,15 @@ class LocalArchiveHandler(tornado.web.RequestHandler):
         for i in range(5):
             day = timenow - timedelta(days=i)
             day = day.strftime('%Y-%m-%d')
+            if date.weekday(day)==5:
+                i+=1
+                day = timenow - timedelta(days=i)
+                day = day.strftime('%Y-%m-%d')
+            elif date.weekday(day)==6:
+                i+=2
+                day = timenow - timedelta(days=i)
+                day = day.strftime('%Y-%m-%d')
+
             (latestdate, local_articles,
                  voted_articles, other_articles, reserved_articles) = (
                      arxivdb.get_articles_for_listing(utcdate=day,
