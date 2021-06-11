@@ -309,16 +309,7 @@ if __name__ == '__main__':
           'room':COFFEE_ROOM,
           'building':COFFEE_BUILDING,
           'department':COFFEE_DEPARTMENT,
-<<<<<<< HEAD
-<<<<<<< HEAD
           'institution':COFFEE_INSTITUTION,}),
-=======
-          'institution':COFFEE_INSTITUTION,
-          'reserve_interval': RESERVE_INTERVAL_DAYS}),
->>>>>>> d0c5cd3 (input)
-=======
-          'institution':COFFEE_INSTITUTION,}),
->>>>>>> 70dc1c4 (input fix)
         (r'/astroph-coffee/about',coffeehandlers.AboutHandler,
          {'database':DATABASE}),
         (r'/astroph-coffee/about/',coffeehandlers.AboutHandler,
