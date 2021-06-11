@@ -3131,6 +3131,7 @@ class UpdateHandler(tornado.web.RequestHandler):
             self.database.close()
 
         import arxivutils
+        os.system('cd /home/coffee/astroph-coffee/run/')
 
         # download the HTML of tonight's astro-ph listing
         listing = arxivutils.arxiv_update()
