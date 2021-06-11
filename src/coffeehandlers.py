@@ -482,6 +482,7 @@ class LocalArchiveHandler(tornado.web.RequestHandler):
 >>>>>>> 53ace5f (today)
 
         local_list = []
+        days = []
         for i in range(5):
             day = timenow - timedelta(days=i)
             day = day.strftime('%Y-%m-%d')
@@ -492,7 +493,7 @@ class LocalArchiveHandler(tornado.web.RequestHandler):
                      )
                 )
             local_list.append(local_articles)
-
+            days.append(day)
 
 
         # check if this session_token corresponds to an existing user
@@ -661,19 +662,10 @@ class LocalArchiveHandler(tornado.web.RequestHandler):
         self.render("local-papers.html",
                     user_name=user_name,
                     local_today=local_today,
-                    voting_localstart=local_start,
-                    voting_localend=local_end,
-                    voting_start=utc_start,
                     local_list=local_list,
-                    voting_end=utc_end,
-                    coffeetime_local=local_coffee,
-                    coffeetime_utc=utc_coffee,
+                    days=days,
                     flash_message=flash_message,
-                    new_user=new_user,
-                    coffee_room=self.room,
-                    coffee_building=self.building,
-                    coffee_department=self.department,
-                    coffee_institution=self.institution)
+                    new_user=new_user)
 
 >>>>>>> f825757 (input fix3)
 

@@ -47,6 +47,7 @@
     {% if local_list %}
 
     {% set count = 0 %}
+<<<<<<< HEAD
 
     {% for local_articles in local_list %}
 
@@ -66,8 +67,14 @@
 
     <h2 id="local-papers">Papers with local authors</h2>
 >>>>>>> 8ed2079 (brackets)
+=======
+>>>>>>> 176cb24 (day separation)
 
     {% for local_articles in local_list %}
+
+    <h2 id="local-papers">Papers with local authors from days[count]</h2>
+
+    {% set count = count + 1%}
 
     {% for article in local_articles %}
 
