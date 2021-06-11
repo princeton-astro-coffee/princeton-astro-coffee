@@ -422,16 +422,11 @@ class LocalArchiveHandler(tornado.web.RequestHandler):
         local_list = []
         days = []
         for i in range(5):
-            day = timenow - timedelta(days=i)
-            day = day.strftime('%Y-%m-%d')
-            if date.weekday(day)==5:
+            dday = timenow - timedelta(days=i)
+            while date.weekday(dday)in [5,6]:
                 i+=1
-                day = timenow - timedelta(days=i)
-                day = day.strftime('%Y-%m-%d')
-            elif date.weekday(day)==6:
-                i+=2
-                day = timenow - timedelta(days=i)
-                day = day.strftime('%Y-%m-%d')
+                dday = timenow - timedelta(days=i)
+            day = dday.strftime('%Y-%m-%d')
 
             (latestdate, local_articles,
                  voted_articles, other_articles, reserved_articles) = (
@@ -605,7 +600,6 @@ class LocalArchiveHandler(tornado.web.RequestHandler):
                     days=days,
                     flash_message=flash_message,
                     new_user=new_user)
-
 
 
 
