@@ -3121,7 +3121,7 @@ class UpdateHandler(tornado.web.RequestHandler):
             closedb = False
 
         # get all local authors first
-        query = 'delete from arxiv where utcdate = '+dtnow
+        query = 'delete from arxiv where utcdate = '+dtnow.strftime('%Y-%m-%d')
         cursor.execute(query)
 
         if closedb:
