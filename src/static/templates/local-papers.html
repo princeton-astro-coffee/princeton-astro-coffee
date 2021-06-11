@@ -27,6 +27,7 @@
   </div>
 </div>
 
+<<<<<<< HEAD
 {% if local_articles or voted_articles or reserved_articles %}
 
 >>>>>>> e56038f (content)
@@ -56,6 +57,15 @@
     {% else %}
 
     <h2 id="local-papers">Papers with local authors from {{ days[count] }}</h2>
+=======
+
+<div class="row no-mathjax">
+  <div class="small-12 columns">
+
+    {% if local_articles %}
+
+    <h2 id="local-papers">Papers with local authors</h2>
+>>>>>>> 8ed2079 (brackets)
 
     {% for article in local_articles %}
 
