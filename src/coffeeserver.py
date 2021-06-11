@@ -299,7 +299,7 @@ if __name__ == '__main__':
           'building':COFFEE_BUILDING,
           'department':COFFEE_DEPARTMENT,
           'institution':COFFEE_INSTITUTION}),
-        (r'/astroph-coffee/updadte',coffeehandlers.UpdadteHandler,
+        (r'/astroph-coffee/update',coffeehandlers.UpdateHandler,
           {'database':DATABASE,
           'voting_start':VOTING_START,
           'voting_end':VOTING_END,
