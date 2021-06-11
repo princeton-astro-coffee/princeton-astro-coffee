@@ -4,7 +4,7 @@
 
 {% block pageheader %}
 
-{% include "topbar-listing.html" %}
+{% include "topbar.html" %}
 
 <div class="row no-mathjax">
   <div class="small-12 columns">
@@ -72,7 +72,13 @@
 
     {% for local_articles in local_list %}
 
-    <h2 id="local-papers">Papers with local authors from days[count]</h2>
+    {% if len(local_articles)<1%}
+
+    <h2 id="local-papers"> No papers found with local authors on {{ days[count] }}</h2>
+
+    {% else %}
+
+    <h2 id="local-papers">Papers with local authors from {{ days[count] }}</h2>
 
     {% set count = count + 1%}
 
@@ -206,6 +212,7 @@
 
     {% end %}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
     {% set count = count + 1%}
@@ -579,8 +586,11 @@
 
     {% end %}
 
+=======
+>>>>>>> 0024c12 (outputs2)
     {% end %}
 
+    {% end %}
 
 >>>>>>> e56038f (content)
 =======
