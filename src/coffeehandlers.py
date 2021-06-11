@@ -428,6 +428,7 @@ class LocalArchiveHandler(tornado.web.RequestHandler):
 
         # check if we're in voting time-limits
 <<<<<<< HEAD
+<<<<<<< HEAD
         timenow = datetime.today()
 
         local_list = []
@@ -476,11 +477,14 @@ class LocalArchiveHandler(tornado.web.RequestHandler):
 =======
         timenow = datetime.now(tz=utc).timetz()
 >>>>>>> f825757 (input fix3)
+=======
+        timenow = datetime.today()
+>>>>>>> 53ace5f (today)
 
         local_list = []
         for i in range(5):
             day = timenow - timedelta(days=i)
-            day.strftime('%Y-%m-%d')
+            day = day.strftime('%Y-%m-%d')
             (latestdate, local_articles,
                  voted_articles, other_articles, reserved_articles) = (
                      arxivdb.get_articles_for_listing(utcdate=day,
