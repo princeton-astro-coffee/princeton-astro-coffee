@@ -355,7 +355,17 @@ class LocalArchiveHandler(tornado.web.RequestHandler):
         url: /astroph-coffee/archive/local-papers
 
         '''
+<<<<<<< HEAD
+<<<<<<< HEAD
     def initialize(self,
+=======
+    def initialize(self, 
+                   reserve_interval,
+                   signerself,
+>>>>>>> d0c5cd3 (input)
+=======
+    def initialize(self,
+>>>>>>> e0a9021 (input2)
                    database,
                    voting_start,
                    voting_end,
