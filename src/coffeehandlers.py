@@ -2911,7 +2911,6 @@ class CalendarHandler(tornado.web.RequestHandler):
         self.render("calendar.html",
                     user_name=user_name,
                     local_today=local_today,
-                    error_message=message,
                     flash_message=flash_message,
                     new_user=new_user)
 
@@ -3150,7 +3149,6 @@ class UpdateHandler(tornado.web.RequestHandler):
         self.render("update.html",
                     user_name=user_name,
                     local_today=local_today,
-                    error_message=message,
                     flash_message=flash_message,
                     new_user=new_user)
 
