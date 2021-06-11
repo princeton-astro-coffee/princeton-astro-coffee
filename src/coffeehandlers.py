@@ -2908,7 +2908,8 @@ class CalendarHandler(tornado.web.RequestHandler):
         utc_end = self.voting_end.strftime('%H:%M %Z')
         utc_coffee = self.coffee_time.strftime('%H:%M %Z')
 
-        self.render("calendar.html",)
+        self.render("calendar.html",
+            flash_message=flash_message,)
 
 
 class UpdateHandler(tornado.web.RequestHandler):
@@ -3142,6 +3143,7 @@ class UpdateHandler(tornado.web.RequestHandler):
         arxivdb.insert_articles(listing, tag_locals=False)
 
         
-        self.render("update.html")
+        self.render("update.html",
+                    flash_message=flash_message,)
 
 
