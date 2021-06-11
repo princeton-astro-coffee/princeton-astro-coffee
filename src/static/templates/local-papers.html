@@ -62,10 +62,12 @@
 <div class="row no-mathjax">
   <div class="small-12 columns">
 
-    {% if local_articles %}
+    {% if local_list %}
 
     <h2 id="local-papers">Papers with local authors</h2>
 >>>>>>> 8ed2079 (brackets)
+
+    {% for local_articles in local_list %}
 
     {% for article in local_articles %}
 
@@ -209,6 +211,7 @@
 >>>>>>> 573168f (cloning listing)
 =======
 
+<<<<<<< HEAD
 
     {% if voted_articles %}
 
@@ -573,6 +576,8 @@
 
 
 >>>>>>> e56038f (content)
+=======
+>>>>>>> 4d7d276 (papers)
   </div>
 </div>
 
