@@ -3126,9 +3126,7 @@ class UpdateHandler(tornado.web.RequestHandler):
         query = 'delete from arxiv where utcdate = '+dtnow.strftime('%Y-%m-%d')
         cursor.execute(query)
 
-        if closedb:
-            cursor.close()
-            self.database.close()
+        
 
         import arxivutils
         os.system('cd /home/coffee/astroph-coffee/run/')
@@ -3142,7 +3140,9 @@ class UpdateHandler(tornado.web.RequestHandler):
         # the default value is 0.93
         arxivdb.insert_articles(listing)
 
-
+        if closedb:
+            cursor.close()
+            self.database.close()
         self.render("update.html")
 
 
