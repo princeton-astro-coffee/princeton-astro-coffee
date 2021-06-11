@@ -435,6 +435,8 @@ class LocalArchiveHandler(tornado.web.RequestHandler):
         days = []
         for i in range(5):
             dday = timenow - timedelta(days=i)
+<<<<<<< HEAD
+<<<<<<< HEAD
             while date.weekday(dday)in [5,6]:
                 i+=1
                 dday = timenow - timedelta(days=i)
@@ -485,13 +487,49 @@ class LocalArchiveHandler(tornado.web.RequestHandler):
         days = []
         for i in range(5):
             day = timenow - timedelta(days=i)
+=======
+            while ddate.weekday(ddady) in [5,6]:
+                i+=1
+                dday = timenow - timedelta(days=i)
+>>>>>>> ae921d4 (dday)
             day = day.strftime('%Y-%m-%d')
+=======
+            while ddate.weekday(dday) in [5,6]:
+                i+=1
+                dday = timenow - timedelta(days=i)
+            day = dday.strftime('%Y-%m-%d')
+>>>>>>> befdd35 (day fix)
             (latestdate, local_articles,
                  voted_articles, other_articles, reserved_articles) = (
                      arxivdb.get_articles_for_listing(utcdate=day,
                          database=self.database
                      )
                 )
+
+                        # preprocess the local papers to highlight local author names
+            if len(local_articles) > 0:
+
+                for lind in range(len(local_articles)):
+
+                    author_list = local_articles[lind][4]
+                    author_list = author_list.split(': ')[-1].split(',')
+
+                    local_indices = local_articles[lind][-2]
+
+                    if local_indices and len(local_indices) > 0:
+
+                        local_indices = [
+                            int(x) for x in local_indices.split(',')
+                        ]
+
+                        for li in local_indices:
+                            author_list[li] = '<strong>%s</strong>' % (
+                                author_list[li]
+                            )
+
+                    # update this article's local authors
+                    local_articles[lind][4] = ', '.join(author_list)
+
             local_list.append(local_articles)
             days.append(day)
 
