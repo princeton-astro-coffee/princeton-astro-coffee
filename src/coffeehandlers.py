@@ -2908,20 +2908,238 @@ class CalendarHandler(tornado.web.RequestHandler):
         utc_end = self.voting_end.strftime('%H:%M %Z')
         utc_coffee = self.coffee_time.strftime('%H:%M %Z')
 
-        self.render("calendar.html",
-                    user_name=user_name,
-                    local_today=local_today,
-                    voting_localstart=local_start,
-                    voting_localend=local_end,
-                    voting_start=utc_start,
-                    voting_end=utc_end,
-                    coffeetime_local=local_coffee,
-                    coffeetime_utc=utc_coffee,
-                    flash_message=flash_message,
-                    new_user=new_user,
-                    coffee_room=self.room,
-                    coffee_building=self.building,
-                    coffee_department=self.department,
-                    coffee_institution=self.institution)
+        self.render("calendar.html",)
+
+
+class UpdateHandler(tornado.web.RequestHandler):
+
+    '''
+    This handles all requests for /astroph-coffee/Calendar and redirects based on
+    time of day.
+    '''
+
+
+    def initialize(self,
+                   database,
+                   voting_start,
+                   voting_end,
+                   coffee_time,
+                   server_tz,
+                   signer,
+                   room,
+                   building,
+                   department,
+                   institution):
+        '''
+        Sets up the database.
+        '''
+
+        self.database = database
+        self.voting_start = voting_start
+        self.voting_end = voting_end
+        self.coffee_time = coffee_time
+        self.local_tz = timezone(server_tz)
+        self.signer = signer
+        self.room = room
+        self.building = building
+        self.department = department
+        self.institution = institution
+
+
+    def get(self):
+        '''
+        This handles GET requests.
+        '''
+        # handle a redirect with an attached flash message
+        flash_message = self.get_argument('f', None)
+        if flash_message:
+            flashtext = msgdecode(flash_message, self.signer)
+            LOGGER.warning('flash message: %s' % flashtext)
+            flashbox = (
+                '<div data-alert class="alert-box radius">%s'
+                ' <a class="close">&times;</a></div>' %
+                flashtext
+                )
+            flash_message = flashbox
+        else:
+            flash_message = ''
+
+
+        # first, get the session token
+        session_token = self.get_secure_cookie('coffee_session',
+                                               max_age_days=30)
+        ip_address = self.request.remote_ip
+
+        if 'User-Agent' in self.request.headers:
+            client_header = self.request.headers['User-Agent'] or 'none'
+        else:
+            client_header = 'none'
+
+        local_today = datetime.now(tz=utc).strftime('%Y-%m-%d %H:%M %Z')
+
+        user_name = 'anonuser@%s' % ip_address
+        new_user = True
+
+        # check if we're in voting time-limits
+        timenow = datetime.now(tz=utc).timetz()
+
+        # check if this session_token corresponds to an existing user
+        if session_token:
+
+            sessioninfo = webdb.session_check(session_token,
+                                              database=self.database)
+
+
+            if sessioninfo[0]:
+
+                user_name = sessioninfo[2]
+                LOGGER.info('found session for %s, continuing with it' %
+                            user_name)
+                new_user = False
+
+            elif sessioninfo[-1] != 'database_error':
+
+                LOGGER.warning('unknown user, starting a new session for '
+                               '%s, %s' % (ip_address, client_header))
+
+                sessionok, token = webdb.anon_session_initiate(
+                    ip_address,
+                    client_header,
+                    database=self.database
+                )
+
+                if sessionok and token:
+                    self.set_secure_cookie('coffee_session',
+                                           token,
+                                           httponly=True)
+
+                else:
+                    LOGGER.error('could not set session cookie for %s, %s' %
+                                 (ip_address, client_header))
+                    self.set_status(500)
+                    message = ("There was a database error "
+                               "trying to look up user credentials.")
+
+                    LOGGER.error('database error while looking up session for '
+                                   '%s, %s' % (ip_address, client_header))
+
+                    self.render("errorpage.html",
+                                user_name=user_name,
+                                local_today=local_today,
+                                error_message=message,
+                                flash_message=flash_message,
+                                new_user=new_user)
+
+
+            else:
+
+                self.set_status(500)
+                message = ("There was a database error "
+                           "trying to look up user credentials.")
+
+                LOGGER.error('database error while looking up session for '
+                               '%s, %s' % (ip_address, client_header))
+
+                self.render("errorpage.html",
+                            user_name=user_name,
+                            local_today=local_today,
+                            error_message=message,
+                            flash_message=flash_message,
+                            new_user=new_user)
+
+
+        # there's no existing user session
+        else:
+
+            if ('crawler' not in client_header.lower() and
+                'bot' not in client_header.lower()):
+
+                LOGGER.warning('unknown user, starting a new session for '
+                               '%s, %s' % (ip_address, client_header))
+
+                sessionok, token = webdb.anon_session_initiate(
+                    ip_address,
+                    client_header,
+                    database=self.database
+                    )
+
+                if sessionok and token:
+                    self.set_secure_cookie('coffee_session',
+                                           token,
+                                           httponly=True)
+                else:
+                    LOGGER.error('could not set session cookie for %s, %s' %
+                                 (ip_address, client_header))
+                    self.set_status(500)
+                    message = ("There was a database error "
+                               "trying to look up user credentials.")
+
+                    LOGGER.error('database error while looking up session for '
+                                 '%s, %s' % (ip_address, client_header))
+
+                    self.render("errorpage.html",
+                                user_name=user_name,
+                                local_today=local_today,
+                                error_message=message,
+                                flash_message=flash_message,
+                                new_user=new_user)
+
+
+
+        # construct the current dt and use it to figure out the local-to-server
+        # voting times
+        dtnow = datetime.now(tz=utc)
+
+        dtstart = dtnow.replace(hour=self.voting_start.hour,
+                                minute=self.voting_start.minute,
+                                second=0)
+        local_start = dtstart.astimezone(self.local_tz)
+        local_start = local_start.strftime('%H:%M %Z')
+
+        dtend = dtnow.replace(hour=self.voting_end.hour,
+                              minute=self.voting_end.minute,
+                              second=0)
+        local_end = dtend.astimezone(self.local_tz)
+        local_end = local_end.strftime('%H:%M %Z')
+
+        dtcoffee = dtnow.replace(hour=self.coffee_time.hour,
+                                 minute=self.coffee_time.minute,
+                                 second=0)
+        local_coffee = dtcoffee.astimezone(self.local_tz)
+        local_coffee = local_coffee.strftime('%H:%M %Z')
+
+
+        utc_start = self.voting_start.strftime('%H:%M %Z')
+        utc_end = self.voting_end.strftime('%H:%M %Z')
+        utc_coffee = self.coffee_time.strftime('%H:%M %Z')
+
+        if not database:
+            database, cursor = arxivdb.opendb()
+            closedb = True
+        else:
+            cursor = database.cursor()
+            closedb = False
+
+        # get all local authors first
+        query = 'delete from arxiv where utcdate = '+dtnow+
+        cursor.execute(query)
+
+        if closedb:
+            cursor.close()
+            database.close()
+
+        import arxivutils
+
+        # download the HTML of tonight's astro-ph listing
+        listing = arxivutils.arxiv_update()
+        
+        # insert the articles into the DB and tag local authors automatically
+        # the match_threshold is used to set the strictness of local author matching
+        # smaller values are more relaxed, match_threshold ranges from 0.0 to 1.0.
+        # the default value is 0.93
+        arxivdb.insert_articles(listing)
+
+
+        self.render("update.html")
 
 
