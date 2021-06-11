@@ -3113,11 +3113,11 @@ class UpdateHandler(tornado.web.RequestHandler):
         utc_end = self.voting_end.strftime('%H:%M %Z')
         utc_coffee = self.coffee_time.strftime('%H:%M %Z')
 
-        if not database:
-            database, cursor = arxivdb.opendb()
+        if not self.database:
+            self.database, cursor = arxivdb.opendb()
             closedb = True
         else:
-            cursor = database.cursor()
+            cursor = self.database.cursor()
             closedb = False
 
         # get all local authors first
@@ -3126,7 +3126,7 @@ class UpdateHandler(tornado.web.RequestHandler):
 
         if closedb:
             cursor.close()
-            database.close()
+            self.database.close()
 
         import arxivutils
 
