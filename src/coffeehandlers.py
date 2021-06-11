@@ -355,17 +355,7 @@ class LocalArchiveHandler(tornado.web.RequestHandler):
         url: /astroph-coffee/archive/local-papers
 
         '''
-<<<<<<< HEAD
-<<<<<<< HEAD
     def initialize(self,
-=======
-    def initialize(self, 
-                   reserve_interval,
-                   signerself,
->>>>>>> d0c5cd3 (input)
-=======
-    def initialize(self,
->>>>>>> e0a9021 (input2)
                    database,
                    voting_start,
                    voting_end,
@@ -427,78 +417,17 @@ class LocalArchiveHandler(tornado.web.RequestHandler):
         new_user = True
 
         # check if we're in voting time-limits
-<<<<<<< HEAD
-<<<<<<< HEAD
         timenow = datetime.today()
 
         local_list = []
         days = []
         for i in range(5):
             dday = timenow - timedelta(days=i)
-<<<<<<< HEAD
-<<<<<<< HEAD
             while date.weekday(dday)in [5,6]:
                 i+=1
                 dday = timenow - timedelta(days=i)
             day = dday.strftime('%Y-%m-%d')
 
-            (latestdate, local_articles,
-                 voted_articles, other_articles, reserved_articles) = (
-                     arxivdb.get_articles_for_listing(utcdate=day,
-                         database=self.database
-                     )
-                )
-
-                        # preprocess the local papers to highlight local author names
-            if len(local_articles) > 0:
-
-                for lind in range(len(local_articles)):
-
-                    author_list = local_articles[lind][4]
-                    author_list = author_list.split(': ')[-1].split(',')
-
-                    local_indices = local_articles[lind][-2]
-
-                    if local_indices and len(local_indices) > 0:
-
-                        local_indices = [
-                            int(x) for x in local_indices.split(',')
-                        ]
-
-                        for li in local_indices:
-                            author_list[li] = '<strong>%s</strong>' % (
-                                author_list[li]
-                            )
-
-                    # update this article's local authors
-                    local_articles[lind][4] = ', '.join(author_list)
-
-            local_list.append(local_articles)
-            days.append(day)
-
-=======
-        timenow = datetime.now(tz=utc).timetz()
->>>>>>> f825757 (input fix3)
-=======
-        timenow = datetime.today()
->>>>>>> 53ace5f (today)
-
-        local_list = []
-        days = []
-        for i in range(5):
-            day = timenow - timedelta(days=i)
-=======
-            while ddate.weekday(ddady) in [5,6]:
-                i+=1
-                dday = timenow - timedelta(days=i)
->>>>>>> ae921d4 (dday)
-            day = day.strftime('%Y-%m-%d')
-=======
-            while ddate.weekday(dday) in [5,6]:
-                i+=1
-                dday = timenow - timedelta(days=i)
-            day = dday.strftime('%Y-%m-%d')
->>>>>>> befdd35 (day fix)
             (latestdate, local_articles,
                  voted_articles, other_articles, reserved_articles) = (
                      arxivdb.get_articles_for_listing(utcdate=day,
@@ -640,7 +569,6 @@ class LocalArchiveHandler(tornado.web.RequestHandler):
         # construct the current dt and use it to figure out the local-to-server
         # voting times
         dtnow = datetime.now(tz=utc)
-<<<<<<< HEAD
 
         dtstart = dtnow.replace(hour=self.voting_start.hour,
                                 minute=self.voting_start.minute,
@@ -672,40 +600,6 @@ class LocalArchiveHandler(tornado.web.RequestHandler):
                     days=days,
                     flash_message=flash_message,
                     new_user=new_user)
-=======
-
-        dtstart = dtnow.replace(hour=self.voting_start.hour,
-                                minute=self.voting_start.minute,
-                                second=0)
-        local_start = dtstart.astimezone(self.local_tz)
-        local_start = local_start.strftime('%H:%M %Z')
-
-        dtend = dtnow.replace(hour=self.voting_end.hour,
-                              minute=self.voting_end.minute,
-                              second=0)
-        local_end = dtend.astimezone(self.local_tz)
-        local_end = local_end.strftime('%H:%M %Z')
-
-        dtcoffee = dtnow.replace(hour=self.coffee_time.hour,
-                                 minute=self.coffee_time.minute,
-                                 second=0)
-        local_coffee = dtcoffee.astimezone(self.local_tz)
-        local_coffee = local_coffee.strftime('%H:%M %Z')
-
-
-        utc_start = self.voting_start.strftime('%H:%M %Z')
-        utc_end = self.voting_end.strftime('%H:%M %Z')
-        utc_coffee = self.coffee_time.strftime('%H:%M %Z')
-
-        self.render("local-papers.html",
-                    user_name=user_name,
-                    local_today=local_today,
-                    local_list=local_list,
-                    days=days,
-                    flash_message=flash_message,
-                    new_user=new_user)
-
->>>>>>> f825757 (input fix3)
 
 
 
