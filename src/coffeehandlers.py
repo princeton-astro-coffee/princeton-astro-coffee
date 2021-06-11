@@ -5,7 +5,7 @@
 This contains the URL handlers for the astroph-coffee web-server.
 
 '''
-
+import os
 import os.path
 import logging
 import base64
@@ -3112,6 +3112,8 @@ class UpdateHandler(tornado.web.RequestHandler):
         utc_start = self.voting_start.strftime('%H:%M %Z')
         utc_end = self.voting_end.strftime('%H:%M %Z')
         utc_coffee = self.coffee_time.strftime('%H:%M %Z')
+
+        os.system('source /home/coffee/astroph-coffee/run/bin/activate')
 
         if not self.database:
             self.database, cursor = arxivdb.opendb()
