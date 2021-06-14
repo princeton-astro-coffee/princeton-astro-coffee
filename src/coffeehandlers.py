@@ -428,7 +428,7 @@ class LocalArchiveHandler(tornado.web.RequestHandler):
                 count+=1
                 dday = timenow - timedelta(days=count)
             day = dday.strftime('%Y-%m-%d')
-            count+1
+            count+=1
 
             (latestdate, local_articles,
                  voted_articles, other_articles, reserved_articles) = (
