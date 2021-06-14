@@ -421,12 +421,14 @@ class LocalArchiveHandler(tornado.web.RequestHandler):
 
         local_list = []
         days = []
+        count = 0
         for i in range(5):
-            dday = timenow - timedelta(days=i)
+            dday = timenow - timedelta(days=count)
             while date.weekday(dday)in [5,6]:
-                i+=1
-                dday = timenow - timedelta(days=i)
+                count+=1
+                dday = timenow - timedelta(days=count)
             day = dday.strftime('%Y-%m-%d')
+            count+1
 
             (latestdate, local_articles,
                  voted_articles, other_articles, reserved_articles) = (
