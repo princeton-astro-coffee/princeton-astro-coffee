@@ -3130,10 +3130,6 @@ class UpdateHandler(tornado.web.RequestHandler):
         query = 'delete from arxiv where utcdate = '+dtnow.strftime('%Y-%m-%d')
         cursor.execute(query)
 
-        if closedb:
-            cursor.close()
-            self.database.close()
-
         import arxivutils
 
         # download the HTML of tonight's astro-ph listing
@@ -3145,6 +3141,9 @@ class UpdateHandler(tornado.web.RequestHandler):
         # the default value is 0.93
         arxivdb.insert_articles(listing, tag_locals=False)
 
+        if closedb:
+            cursor.close()
+            self.database.close()
         
         self.render("update.html",
                     user_name=user_name,
