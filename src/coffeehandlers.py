@@ -3144,6 +3144,13 @@ class UpdateHandler(tornado.web.RequestHandler):
         if closedb:
             cursor.close()
             self.database.close()
+
+        ArticleListHandler(self.database,
+                   self.voting_start,
+                   self.voting_end,
+                   self.server_tz,
+                   self.reserve_interval,
+                   self.signer)
         
         self.render("update.html",
                     user_name=user_name,
