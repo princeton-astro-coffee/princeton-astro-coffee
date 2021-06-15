@@ -2942,6 +2942,7 @@ class UpdateHandler(tornado.web.RequestHandler):
         self.voting_start = voting_start
         self.voting_end = voting_end
         self.coffee_time = coffee_time
+        self.server_tz=server_tz
         self.local_tz = timezone(server_tz)
         self.signer = signer
         self.room = room
