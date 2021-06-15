@@ -3120,14 +3120,14 @@ class UpdateHandler(tornado.web.RequestHandler):
         utc_end = self.voting_end.strftime('%H:%M %Z')
         utc_coffee = self.coffee_time.strftime('%H:%M %Z')
 
-        os.system('source /home/coffee/astroph-coffee/run/bin/activate')
-
         if not self.database:
             self.database, cursor = arxivdb.opendb()
             closedb = True
         else:
             cursor = self.database.cursor()
             closedb = False
+
+        os.system('source /home/coffee/astroph-coffee/run/bin/activate')
 
         # get all local authors first
         query = 'delete from arxiv where utcdate = '+dtnow.strftime('%Y-%m-%d')
@@ -3147,13 +3147,6 @@ class UpdateHandler(tornado.web.RequestHandler):
         if closedb:
             cursor.close()
             self.database.close()
-
-        ArticleListHandler(self.database,
-                   self.voting_start,
-                   self.voting_end,
-                   self.server_tz,
-                   self.reserve_interval,
-                   self.signer)
         
         self.render("update.html",
                     user_name=user_name,
