@@ -5,7 +5,7 @@
 This contains the URL handlers for the astroph-coffee web-server.
 
 '''
-import os
+
 import os.path
 import logging
 import base64
@@ -13,7 +13,7 @@ import re
 
 LOGGER = logging.getLogger(__name__)
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from pytz import utc, timezone
 
 import tornado.web
@@ -350,47 +350,58 @@ class CoffeeHandler(tornado.web.RequestHandler):
 
 class LocalArchiveHandler(tornado.web.RequestHandler):
     '''
-        This handles the local author archives.
+        This handles the local papers archives.
 
-        url: /astroph-coffee/archive/YYYYMMDD
+        url: /astroph-coffee/archive/local-papers
 
         '''
     def initialize(self,
                    database,
                    display,
-                   reserve_interval,
-                   signer):
+                   voting_start,
+                   voting_end,
+                   coffee_time,
+                   server_tz,
+                   signer,
+                   room,
+                   building,
+                   department,
+                   institution):
         '''
-                Sets up the database.
-
-                '''
+        Sets up the database.
+        '''
 
         self.database = database
         self.display = display
-        self.reserve_interval = reserve_interval
+        self.voting_start = voting_start
+        self.voting_end = voting_end
+        self.coffee_time = coffee_time
+        self.local_tz = timezone(server_tz)
         self.signer = signer
+        self.room = room
+        self.building = building
+        self.department = department
+        self.institution = institution
 
-    def get(self, archivedate):
+
+    def get(self):
         '''
         This handles GET requests.
-
         '''
-
         # handle a redirect with an attached flash message
         flash_message = self.get_argument('f', None)
         if flash_message:
             flashtext = msgdecode(flash_message, self.signer)
             LOGGER.warning('flash message: %s' % flashtext)
             flashbox = (
-                    '<div data-alert class="alert-box radius">%s'
-                    '<a href="#" class="close">&times;</a></div>' %
-                    flashtext
-            )
+                '<div data-alert class="alert-box radius">%s'
+                ' <a class="close">&times;</a></div>' %
+                flashtext
+                )
             flash_message = flashbox
         else:
             flash_message = ''
 
-        local_today = datetime.now(tz=utc).strftime('%Y-%m-%d %H:%M %Z')
 
         # first, get the session token
         session_token = self.get_secure_cookie('coffee_session',
@@ -402,14 +413,66 @@ class LocalArchiveHandler(tornado.web.RequestHandler):
         else:
             client_header = 'none'
 
+        local_today = datetime.now(tz=utc).strftime('%Y-%m-%d %H:%M %Z')
+
         user_name = 'anonuser@%s' % ip_address
         new_user = True
+
+        # check if we're in voting time-limits
+        timenow = datetime.today()
+
+        local_list = []
+        days = []
+        count = 0
+        for i in range(5):
+            dday = timenow - timedelta(days=count)
+            while date.weekday(dday)in [5,6]:
+                count+=1
+                dday = timenow - timedelta(days=count)
+            day = dday.strftime('%Y-%m-%d')
+            count+=1
+
+            (latestdate, local_articles,
+                 voted_articles, other_articles, reserved_articles) = (
+                     arxivdb.get_articles_for_listing(utcdate=day,
+                         database=self.database
+                     )
+                )
+
+                        # preprocess the local papers to highlight local author names
+            if len(local_articles) > 0:
+
+                for lind in range(len(local_articles)):
+
+                    author_list = local_articles[lind][4]
+                    author_list = author_list.split(': ')[-1].split(',')
+
+                    local_indices = local_articles[lind][-2]
+
+                    if local_indices and len(local_indices) > 0:
+
+                        local_indices = [
+                            int(x) for x in local_indices.split(',')
+                        ]
+
+                        for li in local_indices:
+                            author_list[li] = '<strong>%s</strong>' % (
+                                author_list[li]
+                            )
+
+                    # update this article's local authors
+                    local_articles[lind][4] = ', '.join(author_list)
+
+            local_list.append(local_articles)
+            days.append(day)
+
 
         # check if this session_token corresponds to an existing user
         if session_token:
 
             sessioninfo = webdb.session_check(session_token,
                                               database=self.database)
+
 
             if sessioninfo[0]:
 
@@ -433,6 +496,61 @@ class LocalArchiveHandler(tornado.web.RequestHandler):
                     self.set_secure_cookie('coffee_session',
                                            token,
                                            httponly=True)
+
+                else:
+                    LOGGER.error('could not set session cookie for %s, %s' %
+                                 (ip_address, client_header))
+                    self.set_status(500)
+                    message = ("There was a database error "
+                               "trying to look up user credentials.")
+
+                    LOGGER.error('database error while looking up session for '
+                                   '%s, %s' % (ip_address, client_header))
+
+                    self.render("errorpage.html",
+                                user_name=user_name,
+                                local_today=local_today,
+                                error_message=message,
+                                flash_message=flash_message,
+                                new_user=new_user)
+
+
+            else:
+
+                self.set_status(500)
+                message = ("There was a database error "
+                           "trying to look up user credentials.")
+
+                LOGGER.error('database error while looking up session for '
+                               '%s, %s' % (ip_address, client_header))
+
+                self.render("errorpage.html",
+                            user_name=user_name,
+                            local_today=local_today,
+                            error_message=message,
+                            flash_message=flash_message,
+                            new_user=new_user)
+
+
+        # there's no existing user session
+        else:
+
+            if ('crawler' not in client_header.lower() and
+                'bot' not in client_header.lower()):
+
+                LOGGER.warning('unknown user, starting a new session for '
+                               '%s, %s' % (ip_address, client_header))
+
+                sessionok, token = webdb.anon_session_initiate(
+                    ip_address,
+                    client_header,
+                    database=self.database
+                    )
+
+                if sessionok and token:
+                    self.set_secure_cookie('coffee_session',
+                                           token,
+                                           httponly=True)
                 else:
                     LOGGER.error('could not set session cookie for %s, %s' %
                                  (ip_address, client_header))
@@ -451,76 +569,41 @@ class LocalArchiveHandler(tornado.web.RequestHandler):
                                 new_user=new_user)
 
 
-            else:
 
-                if ('crawler' not in client_header.lower() and
-                        'bot' not in client_header.lower()):
+        # construct the current dt and use it to figure out the local-to-server
+        # voting times
+        dtnow = datetime.now(tz=utc)
 
-                    LOGGER.warning('unknown user, starting a new session for '
-                                   '%s, %s' % (ip_address, client_header))
+        dtstart = dtnow.replace(hour=self.voting_start.hour,
+                                minute=self.voting_start.minute,
+                                second=0)
+        local_start = dtstart.astimezone(self.local_tz)
+        local_start = local_start.strftime('%H:%M %Z')
 
-                    sessionok, token = webdb.anon_session_initiate(
-                        ip_address,
-                        client_header,
-                        database=self.database
-                    )
+        dtend = dtnow.replace(hour=self.voting_end.hour,
+                              minute=self.voting_end.minute,
+                              second=0)
+        local_end = dtend.astimezone(self.local_tz)
+        local_end = local_end.strftime('%H:%M %Z')
 
-                    if sessionok and token:
-                        self.set_secure_cookie('coffee_session',
-                                               token,
-                                               httponly=True)
-                    else:
-                        LOGGER.error('could not set session cookie for %s, %s' %
-                                     (ip_address, client_header))
-                        self.set_status(500)
-                        message = ("There was a database error "
-                                   "trying to look up user credentials.")
+        dtcoffee = dtnow.replace(hour=self.coffee_time.hour,
+                                 minute=self.coffee_time.minute,
+                                 second=0)
+        local_coffee = dtcoffee.astimezone(self.local_tz)
+        local_coffee = local_coffee.strftime('%H:%M %Z')
 
-                        LOGGER.error('database error while looking up session for '
-                                     '%s, %s' % (ip_address, client_header))
 
-                        self.render("errorpage.html",
-                                    user_name=user_name,
-                                    local_today=local_today,
-                                    error_message=message,
-                                    flash_message=flash_message,
-                                    new_user=new_user)
+        utc_start = self.voting_start.strftime('%H:%M %Z')
+        utc_end = self.voting_end.strftime('%H:%M %Z')
+        utc_coffee = self.coffee_time.strftime('%H:%M %Z')
 
-        if archivedate is None:
-            count = 0
-            local_ahistory = []
-            date_history = []
-            while count < 5:
-                archive_datestr = datetime(hour=0,
-                                           minute=15,
-                                           second=0,
-                                           day=int(day),
-                                           month=int(month),
-                                           year=int(year),
-                                           tzinfo=utc).strftime('%A, %b %d %Y')
-                date_history.append(archive_datestr)
-
-                (latestdate, local_articles,
-                voted_articles, other_articles, reserved_articles) = (
-                arxivdb.get_articles_for_listing(utcdate=todays_utcdate,
-                                                 database=self.database))
-                local_ahistory.append(local_articles)
-
-        if self.display == True:
-            self.render("local-display.html",
-                        local_today=local_today,
-                        dates=date_history,
-                        local_articles=local_ahistory,
-                        flash_message=flash_message,
-                        reserve_interval_days=self.reserve_interval)
-            
-        else:
-            self.render("local_papers.html",
-                        local_today=local_today,
-                        dates=date_history,
-                        local_articles=local_ahistory,
-                        flash_message=flash_message,
-                        reserve_interval_days=self.reserve_interval)
+        self.render("local-papers.html",
+                    user_name=user_name,
+                    local_today=local_today,
+                    local_list=local_list,
+                    days=days,
+                    flash_message=flash_message,
+                    new_user=new_user)
 
 
 
@@ -2923,6 +3006,17 @@ class CalendarHandler(tornado.web.RequestHandler):
         self.render("calendar.html",
                     user_name=user_name,
                     local_today=local_today,
+                    voting_localstart=local_start,
+                    voting_localend=local_end,
+                    voting_start=utc_start,
+                    voting_end=utc_end,
+                    coffeetime_local=local_coffee,
+                    coffeetime_utc=utc_coffee,
                     flash_message=flash_message,
-                    new_user=new_user)
+                    new_user=new_user,
+                    coffee_room=self.room,
+                    coffee_building=self.building,
+                    coffee_department=self.department,
+                    coffee_institution=self.institution)
+
 
