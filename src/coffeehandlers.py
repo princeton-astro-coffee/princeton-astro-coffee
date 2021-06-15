@@ -3136,7 +3136,7 @@ class UpdateHandler(tornado.web.RequestHandler):
         import arxivutils
 
         # download the HTML of tonight's astro-ph listing
-        listing = arxivutils.arxiv_update()
+        listing = arxivutils.arxiv_update(path=/home/coffee/astroph-coffee/src/)
         
         # insert the articles into the DB and tag local authors automatically
         # the match_threshold is used to set the strictness of local author matching

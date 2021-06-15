@@ -238,7 +238,8 @@ def get_arxiv_articles(paperlinks, paperdata, crosslinks, crossdata):
 def arxiv_update(url='https://arxiv.org/list/astro-ph/new',
                  alturl='https://arxiv.org/list/astro-ph/pastweek?show=350',
                  fakery=False,
-                 pickledict=False):
+                 pickledict=False,
+                 path=''):
     '''
     This rolls up all the functions above.
 
@@ -268,7 +269,7 @@ def arxiv_update(url='https://arxiv.org/list/astro-ph/new',
 
         if pickledict:
             import cPickle as pickle
-            pickle_fpath = '/home/coffee/astroph-coffee/rundata/%s-UT-arxiv.pkl' % now.strftime('%Y-%m-%d')
+            pickle_fpath = path+'data/%s-UT-arxiv.pkl' % now.strftime('%Y-%m-%d')
             with open(pickle_fpath,'wb') as fd:
                 pickle.dump(arxiv, fd, pickle.HIGHEST_PROTOCOL)
 
@@ -309,7 +310,7 @@ def arxiv_update(url='https://arxiv.org/list/astro-ph/new',
 
         if pickledict:
             import cPickle as pickle
-            pickle_fpath = '/home/coffee/astroph-coffee/rundata/%s-UT-arxiv.pkl' % now.strftime('%Y-%m-%d')
+            pickle_fpath = path+'data/%s-UT-arxiv.pkl' % now.strftime('%Y-%m-%d')
             with open(pickle_fpath,'wb') as fd:
                 pickle.dump(arxiv, fd, pickle.HIGHEST_PROTOCOL)
 
