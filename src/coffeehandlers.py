@@ -597,7 +597,17 @@ class LocalArchiveHandler(tornado.web.RequestHandler):
         utc_end = self.voting_end.strftime('%H:%M %Z')
         utc_coffee = self.coffee_time.strftime('%H:%M %Z')
 
-        self.render("local-papers.html",
+        if self.display==True:
+            self.render("local-display.html",
+                    user_name=user_name,
+                    local_today=local_today,
+                    local_list=local_list,
+                    days=days,
+                    flash_message=flash_message,
+                    new_user=new_user)
+        else:
+
+            self.render("local-papers.html",
                     user_name=user_name,
                     local_today=local_today,
                     local_list=local_list,
