@@ -2933,7 +2933,8 @@ class UpdateHandler(tornado.web.RequestHandler):
                    room,
                    building,
                    department,
-                   institution):
+                   institution,
+                   reserve_interval):
         '''
         Sets up the database.
         '''
@@ -2946,6 +2947,7 @@ class UpdateHandler(tornado.web.RequestHandler):
         self.local_tz = timezone(server_tz)
         self.signer = signer
         self.room = room
+        self.reserve_interval = reserve_interval
         self.building = building
         self.department = department
         self.institution = institution
