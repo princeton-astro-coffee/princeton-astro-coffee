@@ -268,7 +268,7 @@ def arxiv_update(url='https://arxiv.org/list/astro-ph/new',
 
         if pickledict:
             import cPickle as pickle
-            pickle_fpath = 'data/%s-UT-arxiv.pkl' % now.strftime('%Y-%m-%d')
+            pickle_fpath = '/home/coffee/astroph-coffee/rundata/%s-UT-arxiv.pkl' % now.strftime('%Y-%m-%d')
             with open(pickle_fpath,'wb') as fd:
                 pickle.dump(arxiv, fd, pickle.HIGHEST_PROTOCOL)
 
@@ -309,7 +309,7 @@ def arxiv_update(url='https://arxiv.org/list/astro-ph/new',
 
         if pickledict:
             import cPickle as pickle
-            pickle_fpath = 'data/%s-UT-arxiv.pkl' % now.strftime('%Y-%m-%d')
+            pickle_fpath = '/home/coffee/astroph-coffee/rundata/%s-UT-arxiv.pkl' % now.strftime('%Y-%m-%d')
             with open(pickle_fpath,'wb') as fd:
                 pickle.dump(arxiv, fd, pickle.HIGHEST_PROTOCOL)
 
