@@ -1370,59 +1370,59 @@ class VotingHandler(tornado.web.RequestHandler):
         except:
             trustedip = False
 
-        if self.geofence and user_ip != '127.0.0.1':
-
-            try:
-
-                # check the geoip location
-                geoip = self.geofence.city(user_ip)
-
-
-                if (geoip.country.iso_code in self.countries and
-                    geoip.subdivisions.most_specific.iso_code
-                    in self.regions):
-                    LOGGER.info('geofencing ok: '
-                                'vote request from inside allowed regions')
-
-                else:
-                    LOGGER.warning(
-                        'geofencing activated: '
-                        'vote request from %s '
-                        'is outside allowed regions' %
-                        ('%s-%s' % (
-                            geoip.country.iso_code,
-                            geoip.subdivisions.most_specific.iso_code
-                            ))
-                        )
-                    message = ("Sorry, you're trying to vote "
-                               "from an IP address that is "
-                               "blocked from voting.")
-
-                    jsondict = {'status':'failed',
-                                'message':message,
-                                'results':None}
-                    geolocked = True
-
-                    self.write(jsondict)
-                    self.finish()
-
-
-            # fail deadly
-            except Exception as e:
-                LOGGER.exception('geofencing failed for IP %s, '
-                                 'blocking request.' % user_ip)
-
-                message = ("Sorry, you're trying to vote "
-                           "from an IP address that is "
-                           "blocked from voting.")
-
-                jsondict = {'status':'failed',
-                            'message':message,
-                            'results':None}
-                geolocked = True
-
-                self.write(jsondict)
-                self.finish()
+       # if self.geofence and user_ip != '127.0.0.1':
+#
+       #     try:
+#
+       #         # check the geoip location
+       #         geoip = self.geofence.city(user_ip)
+#
+#
+       #         if (geoip.country.iso_code in self.countries and
+       #             geoip.subdivisions.most_specific.iso_code
+       #             in self.regions):
+       #             LOGGER.info('geofencing ok: '
+       #                         'vote request from inside allowed regions')
+#
+       #         else:
+       #             LOGGER.warning(
+       #                 'geofencing activated: '
+       #                 'vote request from %s '
+       #                 'is outside allowed regions' %
+       #                 ('%s-%s' % (
+       #                     geoip.country.iso_code,
+       #                     geoip.subdivisions.most_specific.iso_code
+       #                     ))
+       #                 )
+       #             message = ("Sorry, you're trying to vote "
+       #                        "from an IP address that is "
+       #                        "blocked from voting.")
+#
+       #             jsondict = {'status':'failed',
+       #                         'message':message,
+       #                         'results':None}
+       #             geolocked = True
+#
+       #             self.write(jsondict)
+       #             self.finish()
+#
+#
+       #     # fail deadly
+       #     except Exception as e:
+       #         LOGGER.exception('geofencing failed for IP %s, '
+       #                          'blocking request.' % user_ip)
+#
+       #         message = ("Sorry, you're trying to vote "
+       #                    "from an IP address that is "
+       #                    "blocked from voting.")
+#
+       #         jsondict = {'status':'failed',
+       #                     'message':message,
+       #                     'results':None}
+       #         geolocked = True
+#
+       #         self.write(jsondict)
+       #         self.finish()
 
 
         # check if we're in voting time-limits
@@ -1439,7 +1439,7 @@ class VotingHandler(tornado.web.RequestHandler):
         if (arxivid and
             votetype and
             sessioninfo[0] and
-            (not geolocked or trustedip) and
+            #(not geolocked or trustedip) and
             in_votetime):
 
             arxivid = xhtml_escape(arxivid)
