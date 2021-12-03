@@ -108,6 +108,33 @@ def add_local_authors(user_data_file, database=None):
         cursor.close()
         database.close()
 
+## Purging the local authors list
+def purge_local_authors(database=None):
+    '''
+
+    This is used to highlight local authors in the listings and optionally
+    restrict signups for the astroph-coffee server to only these authors.
+
+    '''
+
+    # open the database if needed and get a cursor
+    if not database:
+        database, cursor = opendb()
+        closedb = True
+    else:
+        cursor = database.cursor()
+        closedb = False
+
+    query = 'delete from local_authors'
+
+    cursor.execute(query)
+    database.commit()
+
+    # at the end, close the cursor and DB connection
+    if closedb:
+        cursor.close()
+        database.close()
+
 
 def get_local_authors(database=None):
     '''

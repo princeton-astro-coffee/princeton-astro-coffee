@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block pagetitle %}Astro-Coffee@Princeton{% end %}
+
+{% block pageheader %}
+
+{% include "topbar.html" %}
+
+<div class="row">
+  <div class="small-12 columns">
+    <h1>Astro-coffee calendar</h1>
+  </div>
+</div>
+
+{% end %}
+
+
+{% block pagecontent %}
+
+<div class="row no-mathjax">
+  <div class="small-12 columns">
+	<p>This page shows the papers discussed during previous astro coffee sessions. </p>
+
+	<p>The full version of this spreadsheet can be found <a href="https://docs.google.com/spreadsheets/d/18l3EiMV2IGKdG8pcH9D7hee1j3rkSGypuE1-hCdM3N8/edit?usp=sharing">here</a><i class="fa fa-file-pdf-o" style="font-size:48px;color:red"></i>. </p>
+
+  </div>
+</div>
+
+<div align="center"><iframe src="https://docs.google.com/spreadsheets/d/18l3EiMV2IGKdG8pcH9D7hee1j3rkSGypuE1-hCdM3N8/edit?usp=sharing"  width="1500" height="1000" scrolling="yes" style="border:none" seamless></iframe></div>
+
+{% end %}
+
+{% block pagejs %}
+
+<script src="{{ static_url("js/coffee.js") }}"></script>
+
+<script>
+$(document).ready(function () {
+  coffee.action_setup();
+});
+</script>
+
+{% end %}
