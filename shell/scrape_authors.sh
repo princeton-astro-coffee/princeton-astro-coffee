@@ -22,7 +22,7 @@ echo "astro-coffee server directory: $BASEPATH"
 cd $BASEPATH/run
 source $BASEPATH/run/bin/activate
 
-python $BASEPATH/run/scrape_authors.py $BASEPATH/run/static/images/AstroDeptList.csv
+python $BASEPATH/src/scrape_authors.py $BASEPATH/src/static/images/AstroDeptList.csv
 
 deactivate
 

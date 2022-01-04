@@ -84,7 +84,7 @@ def add_local_authors(user_data_file, database=None):
         cursor = database.cursor()
         closedb = False
 
-    query = 'insert into local_authors (author, email) values (?, ?)'
+    query = 'insert or replace into local_authors (author, email) values (?, ?)'
 
     with open(user_data_file,'rb') as fd:
         for line in fd:
@@ -94,7 +94,10 @@ def add_local_authors(user_data_file, database=None):
                     author, email = line.split(',')
                     author, email = author.strip(), email.lower().strip()
                     print('inserting %s with email %s' % (author, email))
-                    cursor.execute(query, (author, email))
+                    cursor.execute(query, (author.decode('utf-8'), email.decode('utf-8')))
+                # except sqlite3.IntegrityError as e:
+                #    print('could not process line: %s, skipping' % line)
+                #    print('error was: %s' % e)
                 except Exception as e:
                     print('could not process line: %s, skipping' % line)
                     print('error was: %s' % e)

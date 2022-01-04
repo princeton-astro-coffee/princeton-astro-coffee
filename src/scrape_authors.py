@@ -22,7 +22,9 @@ def _scrape_authors(url):
         except AttributeError:
             email = header.find('div', class_='file file-image file-image-jpeg file-people_grid_thumbnail_with_link').get('id')
         #print(name, email)
-        lines.append(f"{name},{email}\n")
+	name = name.encode('utf-8')
+	email = email.encode('utf-8')
+        lines.append("{0},{1}\n".format(name, email))
     return lines
 
 def auto_update_author_list(output_filename='static/images/AstroDeptList.csv'):
@@ -55,7 +57,6 @@ def auto_update_author_list(output_filename='static/images/AstroDeptList.csv'):
 
 
 if __name__=='__main__':
-    output_filename = 'static/images/AstroDeptList.csv'
     output_filename = sys.argv[1]
     auto_update_author_list(output_filename)
     webdb.purge_local_authors()
