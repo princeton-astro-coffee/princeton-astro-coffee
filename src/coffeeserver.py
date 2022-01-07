@@ -191,6 +191,7 @@ if __name__ == '__main__':
         GEOFENCE_COUNTRIES = None
         GEOFENCE_REGIONS = None
         GEOFENCE_IPS = None
+        EDITOR_IPS = None
 
     # this is used to sign flash messages so they can't be forged
     FLASHSIGNER = Signer(SESSIONSECRET)
