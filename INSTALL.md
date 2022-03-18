@@ -293,6 +293,14 @@ listing = arxivutils.arxiv_update()
 arxivdb.insert_articles(listing)
 ```
 
+Or simply run the following Python script
+
+```bash
+[astroph-coffee/run]$ source bin/activate
+(run) [astroph-coffee/run]$ python man_update.py $(date --date="tomorrow" +%F)
+```
+
+If you are doing the manual update in the morning before the coffee, then replace "tomorrow" by "today".
 
 ## Correcting arxiv listings
 
