@@ -18,3 +18,4 @@ docs/users.txt
 GITREV
 .emailsettings
 *bin*
+*.swp
