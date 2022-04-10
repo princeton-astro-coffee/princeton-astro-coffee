@@ -12,16 +12,15 @@ def _scrape_authors(url):
     """
     r = requests.get(url)
     soup = BeautifulSoup(r.text, 'html.parser')
-    author_list = soup.find_all('ul', class_='people-info')
-    headers = soup.find_all('div', class_='people-grid-image-container')
+    authors = soup.find_all('div', class_='content-list-item feature-is-3x4')
     lines = []
-    for author, header in zip(author_list, headers):
-        name = author.find('li', class_='people-grid-name-linked').text
+    for author in authors:
+        name = author.find('span', class_='field field--name-title field--type-string field--label-hidden').text
         try:
-            email = author.find('li', class_='people-grid-email').a.text
+            email = author.find('div', class_=('field field--name-field-ps-people-email field--type-email '
+                                               'field--label-inline clearfix')).find('div', 'field__item').text
         except AttributeError:
-            email = header.find('div', class_='file file-image file-image-jpeg file-people_grid_thumbnail_with_link').get('id')
-        #print(name, email)
+            email = author.find('span', class_='field field--name-title field--type-string field--label-hidden').a['href']
 	name = name.encode('utf-8')
 	email = email.encode('utf-8')
         lines.append("{0},{1}\n".format(name, email))
@@ -55,9 +54,12 @@ def auto_update_author_list(output_filename='static/images/AstroDeptList.csv'):
     with open(output_filename, 'w') as f:
         f.writelines(lines)
 
+    return len(lines)
+
 
 if __name__=='__main__':
     output_filename = sys.argv[1]
-    auto_update_author_list(output_filename)
-    webdb.purge_local_authors()
-    webdb.add_local_authors(output_filename)
+    nauthors = auto_update_author_list(output_filename)
+    if nauthors > 0:
+        webdb.purge_local_authors()
+        webdb.add_local_authors(output_filename)
