@@ -19,26 +19,23 @@
 
 <div class="row no-mathjax">
   <div class="small-12 columns">
-	<p>This page shows the calendar of astro-coffee hosts. If you encounter a scheduling 
+	<p>This page redirects you (in 5 seconds) to the calendar of astro-coffee hosts. If you encounter a scheduling 
 	   conflict that makes you unable to host one of your scheduled sessions please 
 	   arrange to swap dates with another host, and reach out to the coffee adminstrator, 
 	   <a href="mailto:draine@astro.princeton.edu"> Bruce Draine </a> to implement the change. 
-	   You can import events from the teamup calendar into your personal calendars by 
-	   clicking a specific event and use the "Share" dropdown menu to select which 
-	   application to export the event to. </p>
 
-	<p>A pdf version of the calendar can be found here: 
-	   <a href="https://www.astro.princeton.edu/~draine/astrocoffee_2021a.pdf">astrocoffee_2021.pdf</a><i class="fa fa-file-pdf-o" style="font-size:48px;color:red"></i> 
-	   or by using the burger menu of the teamup calendar.</p>
+	<p>If you are not automatically redirected in 5 seconds, the calendar can be found here: 
+	   <a href="https://www.astro.princeton.edu/~draine/astrocoffee.pdf">astrocoffee.pdf</a><i class="fa fa-file-pdf-o" style="font-size:48px;color:red"></i> 
+	</p>
 
   </div>
 </div>
 
-<div align="center"><iframe src="https://teamup.com/kssnz3y9bd5oifwnp3"  width="1500" height="1000" scrolling="yes" style="border:none" seamless></iframe></div>
-
 {% end %}
 
 {% block pagejs %}
+
+<meta http-equiv="refresh" content="5; url='https://www.astro.princeton.edu/~draine/astrocoffee.pdf'" />
 
 <script src="{{ static_url("js/coffee.js") }}"></script>
 
@@ -49,3 +46,4 @@ $(document).ready(function () {
 </script>
 
 {% end %}
+
