@@ -43,7 +43,8 @@ def auto_update_author_list(output_filename='static/images/AstroDeptList.csv'):
     """
     pages = (
              "https://web.astro.princeton.edu/people/astronomy-Faculty%20and%20Research%20Scholars",
-             "https://web.astro.princeton.edu/people/postdocs-researchers",
+             "https://web.astro.princeton.edu/people/postdocs-researchers?page=0",
+             "https://web.astro.princeton.edu/people/postdocs-researchers?page=1",
              "https://web.astro.princeton.edu/people/graduate-students",
              "https://web.astro.princeton.edu/people/undergraduate-students",
     )
@@ -63,3 +64,4 @@ if __name__=='__main__':
     if nauthors > 0:
         webdb.purge_local_authors()
         webdb.add_local_authors(output_filename)
+        webdb.add_local_authors("static/images/AstroDeptList-affil.csv")
