@@ -18,7 +18,7 @@ def _scrape_authors(url):
         name = author.find('span', class_='field field--name-title field--type-string field--label-hidden').text
         try:
             email = author.find('div', class_=('field field--name-field-ps-people-email field--type-email '
-                                               'field--label-inline clearfix')).find('div', 'field__item').text
+                                               'field--label-inline clearfix')).find('div', 'field__item').a['href']
         except AttributeError:
             email = author.find('span', class_='field field--name-title field--type-string field--label-hidden').a['href']
 	name = name.encode('utf-8')
